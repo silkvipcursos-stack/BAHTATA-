@@ -23,16 +23,26 @@ export function Hero({ onStartCustomizing }: HeroProps) {
 
   return (
     <section id="inicio" className="border-b border-[#E5E2DC]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-10 pb-12 lg:pt-14 lg:pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12 lg:pt-14 lg:pb-16">
         <div className="max-w-3xl mx-auto text-center">
+          <p className="font-display text-2xl sm:text-3xl font-bold tracking-tight leading-none mb-4">
+            <span className="text-[#171614]">+BAHTATA</span>{' '}
+            <span className="text-[#B45309]">RECHEADA</span>
+          </p>
+
           <h1
-            className="font-display font-bold text-[#171614] tracking-tight leading-[1.06] max-w-3xl mx-auto"
+            className="font-display font-bold tracking-tight leading-[1.06] max-w-3xl mx-auto"
             style={{
               fontSize: 'clamp(2.25rem, 4.2vw, 3.75rem)',
               textWrap: 'balance',
             }}
           >
-            Atenção Seu próximo prato favorito está a poucos minutos de distância!
+            <span className="text-[#171614]">
+              Atenção Seu próximo prato favorito{' '}
+            </span>
+            <span className="text-[#B45309]">
+              está a poucos minutos de distância!
+            </span>
           </h1>
 
           <p className="mt-5 text-base sm:text-lg text-[#57534E] leading-relaxed max-w-2xl mx-auto">

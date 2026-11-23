@@ -97,18 +97,6 @@ export function Header() {
           🔥 PROMOÇÃO VÁLIDA HOJE {promoDateLabel} – 10% DE DESCONTO! PARA A PRIMEIRA COMPRA
         </p>
       </div>
-
-      <header className="bg-[#F8F7F4]/95 backdrop-blur-sm border-b border-[#E5E2DC]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between gap-4">
-          <a
-            href="#inicio"
-            className="inline-flex items-baseline gap-1.5 font-display text-lg sm:text-xl font-bold tracking-tight leading-none whitespace-nowrap shrink-0 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-[#B45309]"
-          >
-            <span className="text-[#171614]">+BAHTATA</span>
-            <span className="text-[#B45309]">RECHEADA</span>
-          </a>
-        </div>
-      </header>
     </div>
   );
 }

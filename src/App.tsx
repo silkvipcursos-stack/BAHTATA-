@@ -270,10 +270,7 @@ export default function App() {
         onSave={handleSaveStoreConfig}
       />
 
-      <RecentOrderNotifications
-        orders={recentOrders}
-        hasMobileBottomBar={choices.length > 0}
-      />
+      <RecentOrderNotifications orders={recentOrders} />
     </div>
   );
 }

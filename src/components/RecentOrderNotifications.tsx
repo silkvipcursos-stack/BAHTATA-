@@ -1,4 +1,5 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { createPortal } from 'react-dom';
 import { MapPin } from 'lucide-react';
 import type { AuthorizedRecentOrder } from '../types';
 
@@ -73,45 +74,100 @@ export const CAXIAS_DO_SUL_RECENT_ORDERS: AuthorizedRecentOrder[] = [
     createdAt: 'Agora há pouco',
     authorized: true,
   },
+  {
+    id: 'cxs-11',
+    firstName: 'Larissa',
+    neighborhood: 'Madureira',
+    createdAt: 'Agora há pouco',
+    authorized: true,
+  },
+  {
+    id: 'cxs-12',
+    firstName: 'Matheus',
+    neighborhood: 'Rio Branco',
+    createdAt: 'Agora há pouco',
+    authorized: true,
+  },
+  {
+    id: 'cxs-13',
+    firstName: 'Beatriz',
+    neighborhood: 'Kayser',
+    createdAt: 'Agora há pouco',
+    authorized: true,
+  },
+  {
+    id: 'cxs-14',
+    firstName: 'Rodrigo',
+    neighborhood: 'Bela Vista',
+    createdAt: 'Agora há pouco',
+    authorized: true,
+  },
+  {
+    id: 'cxs-15',
+    firstName: 'Amanda',
+    neighborhood: 'Fátima',
+    createdAt: 'Agora há pouco',
+    authorized: true,
+  },
+  {
+    id: 'cxs-16',
+    firstName: 'Felipe',
+    neighborhood: 'Universitário',
+    createdAt: 'Agora há pouco',
+    authorized: true,
+  },
 ];
 
 interface RecentOrderNotificationsProps {
   orders: AuthorizedRecentOrder[];
-  hasMobileBottomBar?: boolean;
 }
 
-const INITIAL_DELAY_MS = 1000;
 const NOTIFICATION_INTERVAL_MS = 13000;
-const NOTIFICATION_VISIBLE_MS = 5500;
+const NOTIFICATION_VISIBLE_MS = 5000;
 const EXIT_ANIMATION_MS = 300;
 
 export function RecentOrderNotifications({
   orders,
-  hasMobileBottomBar = false,
 }: RecentOrderNotificationsProps) {
+  const uniqueOrders = useMemo(() => {
+    const seenNames = new Set<string>();
+    return orders.filter((order) => {
+      const normalized = order.firstName.trim().toLowerCase();
+      if (!normalized || seenNames.has(normalized)) return false;
+      seenNames.add(normalized);
+      return true;
+    });
+  }, [orders]);
+
   const [activeIndex, setActiveIndex] = useState(0);
   const [isRendered, setIsRendered] = useState(false);
   const [isVisible, setIsVisible] = useState(false);
 
   useEffect(() => {
-    if (orders.length === 0) {
+    if (uniqueOrders.length === 0) {
       setIsRendered(false);
       setIsVisible(false);
       return;
     }
 
-    let initialTimer: number | undefined;
-    let intervalId: number | undefined;
+    let nextTimer: number | undefined;
     let hideTimer: number | undefined;
     let unmountTimer: number | undefined;
     let enterRaf: number | undefined;
+    let currentIdx = 0;
 
-    const showCurrentNotification = () => {
+    const triggerNotification = (index: number) => {
+      if (index >= uniqueOrders.length) {
+        return;
+      }
+
       if (hideTimer !== undefined) window.clearTimeout(hideTimer);
       if (unmountTimer !== undefined) window.clearTimeout(unmountTimer);
       if (enterRaf !== undefined) window.cancelAnimationFrame(enterRaf);
 
+      setActiveIndex(index);
       setIsRendered(true);
+
       enterRaf = window.requestAnimationFrame(() => {
         enterRaf = window.requestAnimationFrame(() => {
           setIsVisible(true);
@@ -122,62 +178,65 @@ export function RecentOrderNotifications({
         setIsVisible(false);
         unmountTimer = window.setTimeout(() => {
           setIsRendered(false);
-          setActiveIndex((prev) => (prev + 1) % orders.length);
         }, EXIT_ANIMATION_MS);
       }, NOTIFICATION_VISIBLE_MS);
+
+      const nextIdx = index + 1;
+      if (nextIdx < uniqueOrders.length) {
+        nextTimer = window.setTimeout(() => {
+          currentIdx = nextIdx;
+          triggerNotification(currentIdx);
+        }, NOTIFICATION_INTERVAL_MS);
+      }
     };
 
-    initialTimer = window.setTimeout(() => {
-      showCurrentNotification();
-      intervalId = window.setInterval(
-        showCurrentNotification,
-        NOTIFICATION_INTERVAL_MS
-      );
-    }, INITIAL_DELAY_MS);
+    triggerNotification(0);
 
     return () => {
-      if (initialTimer !== undefined) window.clearTimeout(initialTimer);
-      if (intervalId !== undefined) window.clearInterval(intervalId);
+      if (nextTimer !== undefined) window.clearTimeout(nextTimer);
       if (hideTimer !== undefined) window.clearTimeout(hideTimer);
       if (unmountTimer !== undefined) window.clearTimeout(unmountTimer);
       if (enterRaf !== undefined) window.cancelAnimationFrame(enterRaf);
     };
-  }, [orders]);
+  }, [uniqueOrders]);
 
-  if (orders.length === 0 || !isRendered) {
+  if (
+    uniqueOrders.length === 0 ||
+    !isRendered ||
+    typeof document === 'undefined'
+  ) {
     return null;
   }
 
-  const currentOrder = orders[activeIndex % orders.length];
+  const currentOrder = uniqueOrders[activeIndex];
   if (!currentOrder) return null;
 
-  return (
+  return createPortal(
     <div
       aria-live="polite"
-      className={`fixed left-3 right-3 sm:right-auto sm:left-5 ${
-        hasMobileBottomBar ? 'bottom-20 md:bottom-5' : 'bottom-4 md:bottom-5'
-      } z-30 pointer-events-none flex justify-center sm:justify-start`}
+      className="fixed top-[52px] sm:top-[38px] right-2 sm:right-4 z-50 pointer-events-none max-w-[185px] sm:max-w-[235px]"
     >
       <div
-        className={`pointer-events-auto w-full max-w-xs sm:max-w-sm rounded-xl bg-white/95 backdrop-blur-sm border border-[#E5E2DC] shadow-lg px-3.5 py-2.5 flex items-start gap-2.5 transition-all duration-300 ease-out ${
+        className={`pointer-events-auto rounded-lg bg-white/95 backdrop-blur-sm border border-[#E5E2DC] shadow-md px-2 py-1.5 flex items-center gap-1.5 transition-all duration-300 ease-out ${
           isVisible
             ? 'opacity-100 translate-y-0'
-            : 'opacity-0 translate-y-3'
+            : 'opacity-0 -translate-y-2'
         }`}
       >
-        <span className="w-8 h-8 rounded-lg bg-[#FEF7EE] border border-[#FDE6C4] flex items-center justify-center text-[#B45309] shrink-0 mt-0.5">
-          <MapPin className="w-4 h-4" aria-hidden="true" />
+        <span className="w-5 h-5 rounded-md bg-[#FEF7EE] border border-[#FDE6C4] flex items-center justify-center text-[#B45309] shrink-0">
+          <MapPin className="w-2.5 h-2.5" aria-hidden="true" />
         </span>
 
         <div className="min-w-0">
-          <p className="text-xs font-bold text-[#171614] leading-snug uppercase">
-            “{currentOrder.firstName} ACABOU DE PEDIR UMA BATATA RECHEADA!”
+          <p className="text-[9.5px] sm:text-[10px] font-bold text-[#171614] leading-tight uppercase">
+            {currentOrder.firstName} ACABOU DE PEDIR UMA BATATA RECHEADA!
           </p>
-          <p className="text-[11px] font-medium text-[#57534E] mt-0.5">
-            Bairro: {currentOrder.neighborhood} – Caxias do Sul/RS.
+          <p className="text-[8.5px] sm:text-[9px] font-medium text-[#57534E] mt-0.5 truncate">
+            Caxias do Sul/RS · Bairro {currentOrder.neighborhood}
           </p>
         </div>
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }
