@@ -129,7 +129,7 @@ export function Hero({ onStartCustomizing }: HeroProps) {
 
   return (
     <section id="inicio" className="border-b border-[#E5E2DC]">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-12 pb-12 lg:pt-14 lg:pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-20 pb-12 sm:pt-[76px] lg:pt-20 lg:pb-16">
         <div className="max-w-3xl mx-auto text-center">
           <p className="font-display text-2xl sm:text-3xl font-bold tracking-tight leading-none mb-4">
             <span className="text-[#171614]">+BAHTATA</span>{' '}

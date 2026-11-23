@@ -122,7 +122,7 @@ interface RecentOrderNotificationsProps {
   orders: AuthorizedRecentOrder[];
 }
 
-const NOTIFICATION_INTERVAL_MS = 13000;
+const NOTIFICATION_INTERVAL_MS = 16000;
 const NOTIFICATION_VISIBLE_MS = 5000;
 const EXIT_ANIMATION_MS = 300;
 
@@ -214,24 +214,30 @@ export function RecentOrderNotifications({
   return createPortal(
     <div
       aria-live="polite"
-      className="fixed top-[62px] sm:top-[48px] right-2.5 sm:right-5 z-50 pointer-events-none max-w-[min(300px,calc(100vw-1.25rem))] sm:max-w-[360px]"
+      className="fixed top-[64px] sm:top-[48px] left-2.5 right-2.5 sm:left-auto sm:right-5 z-50 pointer-events-none sm:max-w-[min(560px,calc(100vw-2.5rem))] md:max-w-[min(760px,calc(100vw-2.5rem))]"
     >
       <div
-        className={`pointer-events-auto rounded-xl bg-white/95 backdrop-blur-sm border border-[#E5E2DC] shadow-lg px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center gap-3 transition-all duration-300 ease-out ${
+        className={`pointer-events-auto rounded-xl bg-white/95 backdrop-blur-sm border border-[#E5E2DC] shadow-lg px-3 py-2 sm:px-4 sm:py-2 flex items-center gap-2.5 sm:gap-3 transition-all duration-300 ease-out ${
           isVisible
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 -translate-y-2'
         }`}
       >
-        <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#FEF7EE] border border-[#FDE6C4] flex items-center justify-center text-[#B45309] shrink-0">
-          <MapPin className="w-4 h-4 sm:w-[18px] sm:h-[18px]" aria-hidden="true" />
+        <span className="w-7 h-7 sm:w-8 sm:h-8 rounded-lg bg-[#FEF7EE] border border-[#FDE6C4] flex items-center justify-center text-[#B45309] shrink-0">
+          <MapPin className="w-3.5 h-3.5 sm:w-4 sm:h-4" aria-hidden="true" />
         </span>
 
-        <div className="min-w-0">
-          <p className="text-xs sm:text-[13px] font-bold text-[#171614] leading-snug uppercase">
+        <div className="min-w-0 flex-1 flex flex-col md:flex-row md:items-center md:gap-2">
+          <p className="text-[11px] sm:text-xs font-bold text-[#171614] leading-tight uppercase md:whitespace-nowrap">
             {currentOrder.firstName} ACABOU DE PEDIR UMA BATATA RECHEADA!
           </p>
-          <p className="text-[11px] sm:text-xs font-medium text-[#57534E] mt-0.5 truncate">
+          <span
+            className="hidden md:inline text-[#D6D2C9] shrink-0"
+            aria-hidden="true"
+          >
+            ·
+          </span>
+          <p className="text-[10.5px] sm:text-xs font-medium text-[#57534E] leading-tight mt-0.5 md:mt-0 truncate md:whitespace-nowrap">
             Caxias do Sul/RS · Bairro {currentOrder.neighborhood}
           </p>
         </div>
