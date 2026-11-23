@@ -1,0 +1,6 @@
+{
+  "name": "+BAHTATA RECHEADA — Batatas Recheadas Artesanais",
+  "description": "Batatas recheadas artesanais assadas na hora. Personalize com ingredientes variados, molhos artesanais e opções exclusivas, com agendamento de entrega ou retirada.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
