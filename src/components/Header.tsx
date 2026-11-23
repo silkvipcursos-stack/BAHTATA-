@@ -91,9 +91,9 @@ export function Header() {
       <div
         role="region"
         aria-label="Promoção do dia"
-        className="w-full bg-[#DC2626] text-white px-3 py-2 text-center border-b border-[#B91C1C]"
+        className="w-full bg-[#DC2626] text-white px-3 py-2.5 text-center border-b border-[#B91C1C]"
       >
-        <p className="max-w-7xl mx-auto text-[11px] sm:text-xs font-bold tracking-wide leading-snug animate-promo-blink">
+        <p className="max-w-7xl mx-auto text-[13px] sm:text-sm md:text-[15px] font-bold tracking-wide leading-snug animate-promo-blink">
           🔥 PROMOÇÃO VÁLIDA HOJE {promoDateLabel} – 10% DE DESCONTO! PARA A PRIMEIRA COMPRA
         </p>
       </div>

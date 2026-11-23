@@ -284,7 +284,7 @@ export function buildWhatsAppMessage(params: {
     extraAddons.forEach((addon) => {
       const portionLabel = addon.quantity === 1 ? 'porção' : 'porções';
       lines.push(
-        `- ${addon.name}: ${addon.quantity} ${portionLabel} (R$ ${formatDecimalBR(addon.total)})`
+        `${addon.name}: ${addon.quantity} ${portionLabel} (R$ ${formatDecimalBR(addon.total)})`
       );
     });
     lines.push('');
@@ -294,7 +294,12 @@ export function buildWhatsAppMessage(params: {
     `Recebimento: ${modeLabel}`,
     `Taxa de entrega: R$ ${feeText}`,
     '',
-    `*VALOR TOTAL: R$ ${totalText}*`
+    `*VALOR TOTAL: R$ ${totalText}*`,
+    '',
+    'PAGAMENTO VIA PIX',
+    'Chave Pix: 02556224061',
+    '',
+    'Após realizar o pagamento, envie o comprovante aqui pelo WhatsApp para confirmarmos seu pedido.'
   );
 
   return lines.join('\n');

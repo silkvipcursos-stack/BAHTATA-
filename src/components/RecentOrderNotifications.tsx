@@ -214,24 +214,24 @@ export function RecentOrderNotifications({
   return createPortal(
     <div
       aria-live="polite"
-      className="fixed top-[52px] sm:top-[38px] right-2 sm:right-4 z-50 pointer-events-none max-w-[185px] sm:max-w-[235px]"
+      className="fixed top-[62px] sm:top-[48px] right-2.5 sm:right-5 z-50 pointer-events-none max-w-[min(300px,calc(100vw-1.25rem))] sm:max-w-[360px]"
     >
       <div
-        className={`pointer-events-auto rounded-lg bg-white/95 backdrop-blur-sm border border-[#E5E2DC] shadow-md px-2 py-1.5 flex items-center gap-1.5 transition-all duration-300 ease-out ${
+        className={`pointer-events-auto rounded-xl bg-white/95 backdrop-blur-sm border border-[#E5E2DC] shadow-lg px-3.5 py-2.5 sm:px-4 sm:py-3 flex items-center gap-3 transition-all duration-300 ease-out ${
           isVisible
             ? 'opacity-100 translate-y-0'
             : 'opacity-0 -translate-y-2'
         }`}
       >
-        <span className="w-5 h-5 rounded-md bg-[#FEF7EE] border border-[#FDE6C4] flex items-center justify-center text-[#B45309] shrink-0">
-          <MapPin className="w-2.5 h-2.5" aria-hidden="true" />
+        <span className="w-8 h-8 sm:w-9 sm:h-9 rounded-lg bg-[#FEF7EE] border border-[#FDE6C4] flex items-center justify-center text-[#B45309] shrink-0">
+          <MapPin className="w-4 h-4 sm:w-[18px] sm:h-[18px]" aria-hidden="true" />
         </span>
 
         <div className="min-w-0">
-          <p className="text-[9.5px] sm:text-[10px] font-bold text-[#171614] leading-tight uppercase">
+          <p className="text-xs sm:text-[13px] font-bold text-[#171614] leading-snug uppercase">
             {currentOrder.firstName} ACABOU DE PEDIR UMA BATATA RECHEADA!
           </p>
-          <p className="text-[8.5px] sm:text-[9px] font-medium text-[#57534E] mt-0.5 truncate">
+          <p className="text-[11px] sm:text-xs font-medium text-[#57534E] mt-0.5 truncate">
             Caxias do Sul/RS · Bairro {currentOrder.neighborhood}
           </p>
         </div>

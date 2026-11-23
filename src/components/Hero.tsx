@@ -1,8 +1,37 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { ArrowRight, ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import { GALLERY_IMAGES } from '../data/menu';
 import { ConfettiBurst, type BurstOrigin } from './ConfettiBurst';
 import { SafeImage } from './SafeImage';
+
+interface YTPlayerInstance {
+  unloadModule?: (moduleName: string) => void;
+  setOption?: (
+    moduleName: string,
+    option: string,
+    value: Record<string, unknown>
+  ) => void;
+}
+
+interface YTGlobal {
+  Player: new (
+    element: HTMLElement | string,
+    options: {
+      events?: {
+        onReady?: (event: { target: YTPlayerInstance }) => void;
+        onApiChange?: (event: { target: YTPlayerInstance }) => void;
+        onStateChange?: (event: { target: YTPlayerInstance; data: number }) => void;
+      };
+    }
+  ) => YTPlayerInstance;
+}
+
+declare global {
+  interface Window {
+    YT?: YTGlobal;
+    onYouTubeIframeAPIReady?: () => void;
+  }
+}
 
 interface HeroProps {
   onStartCustomizing: () => void;
@@ -12,6 +41,83 @@ export function Hero({ onStartCustomizing }: HeroProps) {
   const [activeIndex, setActiveIndex] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
   const [burst, setBurst] = useState<BurstOrigin | null>(null);
+  const vslIframeRef = useRef<HTMLIFrameElement | null>(null);
+
+  const vslEmbedUrl = useMemo(() => {
+    const params = new URLSearchParams({
+      enablejsapi: '1',
+      cc_load_policy: '0',
+      rel: '0',
+      modestbranding: '1',
+      playsinline: '1',
+    });
+    if (typeof window !== 'undefined' && window.location.origin) {
+      params.set('origin', window.location.origin);
+    }
+    return `https://www.youtube.com/embed/AHk1nEcVTRY?${params.toString()}`;
+  }, []);
+
+  useEffect(() => {
+    let isMounted = true;
+    let playerAttached = false;
+
+    const disableCaptions = (player: YTPlayerInstance | undefined) => {
+      if (!player) return;
+      try {
+        player.unloadModule?.('captions');
+        player.unloadModule?.('cc');
+        player.setOption?.('captions', 'track', {});
+        player.setOption?.('cc', 'track', {});
+      } catch {
+        // Ignore if captions module is not active yet
+      }
+    };
+
+    const attachPlayer = () => {
+      if (!isMounted || playerAttached || !vslIframeRef.current || !window.YT?.Player) {
+        return;
+      }
+      playerAttached = true;
+
+      new window.YT.Player(vslIframeRef.current, {
+        events: {
+          onReady: (event) => {
+            disableCaptions(event.target);
+          },
+          onApiChange: (event) => {
+            disableCaptions(event.target);
+          },
+          onStateChange: (event) => {
+            disableCaptions(event.target);
+          },
+        },
+      });
+    };
+
+    if (window.YT?.Player) {
+      attachPlayer();
+    } else {
+      const previousReady = window.onYouTubeIframeAPIReady;
+      window.onYouTubeIframeAPIReady = () => {
+        previousReady?.();
+        attachPlayer();
+      };
+
+      const existingScript = document.querySelector(
+        'script[src="https://www.youtube.com/iframe_api"]'
+      );
+      if (!existingScript) {
+        const script = document.createElement('script');
+        script.src = 'https://www.youtube.com/iframe_api';
+        script.async = true;
+        document.head.appendChild(script);
+      }
+    }
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
 
   useEffect(() => {
     if (isPaused) return;
@@ -52,7 +158,9 @@ export function Hero({ onStartCustomizing }: HeroProps) {
           <div className="mt-7 rounded-xl bg-[#171614] p-2.5 sm:p-3 border border-[#292524] max-w-2xl mx-auto">
             <div className="w-full h-[420px] sm:h-[520px] rounded-lg overflow-hidden bg-black">
               <iframe
-                src="https://www.youtube.com/embed/AHk1nEcVTRY?rel=0&modestbranding=1&playsinline=1"
+                ref={vslIframeRef}
+                id="hero-vsl-player"
+                src={vslEmbedUrl}
                 title="Vídeo VSL Batata Recheada Artesanal"
                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                 allowFullScreen
